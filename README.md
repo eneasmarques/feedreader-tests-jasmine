@@ -3,13 +3,13 @@
 ## Índice
 * [Instalar](#instalar)
 * [Instruções](#instruções)
-* [Contribuindo](#contribuindo)
 * [Testes Realizados](#testes)
+* [Contribuindo](#contribuindo)
   
 ## Instalar
 
-[GitHub.com](https://github.com/eneasmarques/udacity-test-jasmine) - (branch master)
-[GitHub.io](https://eneasmarques.github.io/udacity-test-jasmine)
+[GitHub.com](https://github.com/eneasmarques/frontend-nanodegree-feedreader) - (branch master)
+[GitHub.io](https://eneasmarques.github.io/frontend-nanodegree-feedreader)
 
 ## Instruções
 

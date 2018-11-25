@@ -101,14 +101,14 @@
      */
     beforeEach(async () => {
       await loadFeed(0);
-      firstLink = document.querySelector(".entry-link");
+      firstLink = document.querySelectorAll(".entry-link");
       await loadFeed(1);
     });
 
     /* Verifica se o conteúdo é alterado após seleção de novo Feed */
     it("should update feed", () => {
       /* Atribui o valor do primeiro link do segundo Feed a secondLink */
-      secondLink = document.querySelector(".entry-link");
+      secondLink = document.querySelectorAll(".entry-link");
 
       expect(firstLink).not.toEqual(secondLink);
     });

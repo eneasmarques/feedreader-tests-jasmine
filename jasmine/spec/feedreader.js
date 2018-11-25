@@ -1,149 +1,116 @@
 /* feedreader.js
  *
- * This is the spec file that Jasmine will read and contains
- * all of the tests that will be run against your application.
+ * Arquivo com testes que serão executados no aplicativo
  */
 
-/* We're placing all of our tests within the () function,
- * since some of these tests may require DOM elements. We want
- * to ensure they don't run until the DOM is ready.
+/* Testes dentro de '(() => {})()' para garantir que sejam
+ * executados quando o DOM estiver pronto
  */
 (() => {
-    /* Função para simular clicks */
-    const eventClick = (elem) => {
-        return new Promise((resolve) => {
-            const evt = new MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true
-            });
-            elem.dispatchEvent(evt);
-            resolve();
-        });
-    };
+  /* Função para simular clicks */
+  const eventClick = elem => {
+    return new Promise(resolve => {
+      const evt = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      });
+      elem.dispatchEvent(evt);
+      resolve();
+    });
+  };
 
+  /* Testes relacionados a variável allFeeds */
+  describe("RSS Feeds", () => {
+    /* Verifica se allFeeds foi definido e possue um valor */
+    it("are defined", function() {
+      expect(allFeeds).toBeDefined();
+      expect(allFeeds.length).not.toBe(0);
+    });
+
+    /* Verifa se todos os Feeds possuem uma url */
+    it("should have an url", () => {
+      /* Filtra os Feeds sem url */
+      const feed = allFeeds.filter(feed => feed.url !== "");
+
+      expect(feed).not.toEqual([]);
+    });
+
+    /* Analisa se todos os Feed possuem um nome */
+    it("should have a name", () => {
+      /* Filtra os Feeds sem nome */
+      const name = allFeeds.filter(feed => feed.name !== "");
+
+      expect(name).not.toEqual([]);
+    });
+  });
+
+  /* TODO: Write a new test suite named "The menu" */
+  describe("The menu", () => {
     const body = document.body;
-    /* This is our first test suite - a test suite just contains
-    * a related set of tests. This suite is all about the RSS
-    * feeds definitions, the allFeeds variable in our application.
-    */
-    describe('RSS Feeds', () => {
-        /* This is our first test - it tests to make sure that the
-         * allFeeds variable has been defined and that it is not
-         * empty. Experiment with this before you get started on
-         * the rest of this project. What happens when you change
-         * allFeeds in app.js to be an empty array and refresh the
-         * page?
-         */
-        it('are defined', function () {
-            expect(allFeeds).toBeDefined();
-            expect(allFeeds.length).not.toBe(0);
-        });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
-         */
-        it('should have an url', () => {
-            /* Filtra os Feeds sem url */ 
-            const feed = allFeeds.filter(feed => feed.url !== '');
-
-            expect(feed).not.toEqual([]);
-        });
-
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
-        it('should have a name', () => {
-            /* Fitra os Feeds sem nome */
-            const name = allFeeds.filter(feed => feed.name !== '');
-
-            expect(name).not.toEqual([]);
-        });
+    /* Verifica se o menu é invisível pro padrão */
+    it("should have a hidden menu by default", () => {
+      expect(body).toHaveClass("menu-hidden");
     });
 
+    /* Teste para verificar a visibilidade do menu quando
+     * ícone for clicado
+     */
+    it("should show the menu on click", () => {
+      const elem = document.querySelector(".icon-list");
 
-    /* TODO: Write a new test suite named "The menu" */
-    describe('The menu', () => {
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
-         */
-        it('should have a hidden menu by default', () => {
-            expect(body).toHaveClass('menu-hidden');
-        });
+      /* Simula click no elemento de classe icon-list */
+      eventClick(elem);
+      /* Verifica se o Menu ficará visível ao clicar */
+      expect(body).not.toHaveClass("menu-hidden");
 
-        /* TODO: Write a test that ensures the menu changes
-         * visibility when the menu icon is clicked. This test
-         * should have two expectations: does the menu display when
-         * clicked and does it hide when clicked again.
-         */
-        it('should show the menu on click', () => {
-            const elem = document.querySelector('.icon-list');
+      eventClick(elem);
+      /* Verifica se o Menu ficará invisível ao ser clicado
+       * pela segunda vez
+       */
+      expect(body).toHaveClass("menu-hidden");
+    });
+  });
 
-            /* Simula click no elemento de classe icon-list */
-            eventClick(elem);            
-            /* Verifica se o Menu ficará visível ao clicar */
-            expect(body).not.toHaveClass('menu-hidden');
-
-            eventClick(elem);
-            /* Verifica se o Menu ficará invisível ao ser clicado 
-             * pela segunda vez
-             */
-            expect(body).toHaveClass('menu-hidden');
-        });
+  /* Testes para Entradas Iniciais */
+  describe("Initial Entries", () => {
+    /* Utilizando async/await para carrar o Feed */
+    beforeEach(async () => {
+      await loadFeed(2);
     });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
-    describe('Initial Entries', () => {        
-        /* Utilizando async/await para carrar o Feed */
-        beforeEach(async () => {
-            await loadFeed(2);
-        });
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
-        it('should contain there is at least a single feed',() => {                                      
-            /* Verifca se a quantidades de links do Feed é maior que zero */
-            const count = document.querySelectorAll('.feed > .entry-link').length;                                    
-            expect(count).toBeGreaterThan(0);                            
-        });
+    /* Teste para verificar se há pelo mesno um .entry após
+     * finalização da função loadFeed()
+     */
+    it("should contain there is at least a single feed", () => {
+      /* Verifca se a quantidades de links do Feed é maior que zero */
+      const count = document.querySelectorAll(".feed > .entry-link").length;
+      expect(count).toBeGreaterThan(0);
+    });
+  });
+
+  /* Testes para seleção de novo Feed*/
+  describe("New Feed Selection", () => {
+    let firstLink;
+    let secondLink;
+
+    /* Utilizando async/await para carrar o feed
+     * atribui o valor do primeiro Feed a firstLink
+     * e carrega o segundo Feed
+     */
+    beforeEach(async () => {
+      await loadFeed(0);
+      firstLink = document.querySelector(".entry-link");
+      await loadFeed(1);
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
-    describe('New Feed Selection', () => {
-        let firstLink;
-        let secondLink;        
+    /* Verifica se o conteúdo é alterado após seleção de novo Feed */
+    it("should update feed", () => {
+      /* Atribui o valor do primeiro link do segundo Feed a secondLink */
+      secondLink = document.querySelector(".entry-link");
 
-        /* Utilizando async/await para carrar o feed
-         * atribui o valor do primeiro Feed a firstLink
-         * carrega o segundo Feed
-         */
-        beforeEach(async () => {
-            await loadFeed(0);                        
-            firstLink = document.querySelector('.entry-link');                      
-            await loadFeed(1);
-            });                                                         
-
-             
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
-        it('should update feed',() => {                                                           
-           /*
-            * Atribui o valor do primeiro link do segundo Feed a secondLink
-            */
-            secondLink = document.querySelector('.entry-link');          
-            
-            expect(firstLink).not.toEqual(secondLink);                                               
-        });
+      expect(firstLink).not.toEqual(secondLink);
     });
+  });
 })();
